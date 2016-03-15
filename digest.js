@@ -14,15 +14,26 @@ function digestAuthInterceptorProvider() {
     authenticationHeader = 'www-authenticate',
     credentialsInvalidPath = '/login';
 
-  this.setUsername = function(value) { username = value; };
-  this.setPassword = function(value) { password = value; };
-  this.setMaximumRetries = function(value) { maximumRetries = value; };
-  this.setCustomAuthenticationHeader = function(value) { authenticationHeader = value; };
-  this.setCredentialsInvalidPath = function(value) { credentialsInvalidPath = value; };
+  this.setUsername = function(value) {
+    username = value;
+  };
+  this.setPassword = function(value) {
+    password = value;
+  };
+  this.setMaximumRetries = function(value) {
+    maximumRetries = value;
+  };
+  this.setCustomAuthenticationHeader = function(value) {
+    authenticationHeader = value;
+  };
+  this.setCredentialsInvalidPath = function(value) {
+    credentialsInvalidPath = value;
+  };
 
   this.$get = digestAuthInterceptorFactory;
 
   digestAuthInterceptorFactory.$inject = ['$q', '$injector', '$location', 'md5', 'localStorageService'];
+
   function digestAuthInterceptorFactory($q, $injector, $location, md5, localStorageService) {
     return DigestAuthInterceptor(username, password, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService);
   }
@@ -118,38 +129,34 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
     delete rejection.config.headers.authorization;
 
     $http({
-      method:   rejection.config.method,
-      url:      rejection.config.url,
-      params:   rejection.config.params,
-      data:     rejection.config.data,
-      headers:  rejection.config.headers,
+      method: rejection.config.method,
+      url: rejection.config.url,
+      params: rejection.config.params,
+      data: rejection.config.data,
+      headers: rejection.config.headers,
       crossDomain: true,
       contentType: rejection.config.contentType || 'application/json',
       transformRequest: rejection.config.transformRequest,
       transformResponse: rejection.config.transformResponse
     })
-    .success(function(data, status, headers, config) {
-      password = null;
-      deferredResponse.resolve(
-        {
+      .success(function(data, status, headers, config) {
+        password = null;
+        deferredResponse.resolve({
           data: data,
           status: status,
           headers: headers,
           config: config
-        }
-      );
-    })
-    .error(function (data, status, headers, config) {
-      HA1 = null;
-      deferredResponse.reject(
-        {
+        });
+      })
+      .error(function(data, status, headers, config) {
+        HA1 = null;
+        deferredResponse.reject({
           data: data,
           status: status,
           headers: headers,
           config: config
-        }
-      );
-    });
+        });
+      });
 
     return deferredResponse.promise;
   }
@@ -211,21 +218,18 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
 
     var map = {
       username: [username, true],
-      realm:    [realm, true],
-      nonce:    [nonce, true],
-      uri:    [uri, true],
-      algorithm:  ['MD5', false],
+      realm: [realm, true],
+      nonce: [nonce, true],
+      uri: [uri, true],
+      algorithm: ['MD5', false],
       response: [response, true],
-      opaque:   [opaque, true],
-      qop:    [qop, true],
-      nc:     [nc, true],
-      cnonce:   [cnonce, true]
+      opaque: [opaque, true],
+      qop: [qop, true],
+      nc: [nc, true],
+      cnonce: [cnonce, true]
     };
 
     return 'Digest ' + stringifyReturn(map);
-
-
-
 
     function genNonce(b) {
       var c = [],
@@ -233,7 +237,7 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
         a = e.length;
 
       for (var i = 0; i < b; ++i) {
-        c.push(e[Math.random() * a |0]);
+        c.push(e[Math.random() * a | 0]);
       }
 
       return c.join('');

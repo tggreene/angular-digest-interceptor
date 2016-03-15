@@ -135,10 +135,16 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
         }
       );
     })
-    .error(function(httpReject) {
+    .error(function (data, status, headers, config) {
       HA1 = null;
-      deferredResponse.reject(httpReject);
-    });
+      deferredResponse.reject(
+        {
+          data: data,
+          status: status,
+          headers: headers,
+          config: config
+        }
+      );
 
     return deferredResponse.promise;
   }

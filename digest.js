@@ -84,6 +84,10 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
     }
 
     if (digest.failedQueue[rejection.config.url] === maximumRetries) {
+      HA1 = null;
+      username = null;
+      password = null;
+      authHeader = null;
       delete digest.failedQueue[rejection.config.url];
       return $q.reject(rejection);
     }

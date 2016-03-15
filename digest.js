@@ -149,6 +149,7 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
           config: config
         }
       );
+    });
 
     return deferredResponse.promise;
   }

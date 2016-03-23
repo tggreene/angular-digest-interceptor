@@ -34,12 +34,12 @@ function digestAuthInterceptorProvider() {
 
   digestAuthInterceptorFactory.$inject = ['$q', '$injector', '$location', 'md5', 'localStorageService'];
 
-  function digestAuthInterceptorFactory($q, $injector, $location, md5, localStorageService) {
-    return DigestAuthInterceptor(username, password, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService);
+  function digestAuthInterceptorFactory($q, $injector, $location, md5, localStorageService, $rootScope) {
+    return DigestAuthInterceptor(username, password, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService, $rootScope);
   }
 }
 
-function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService) {
+function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService, $rootScope) {
   var authHeader = null,
     username = initialUsername,
     password = initialPassword,
@@ -52,6 +52,13 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
   };
 
   return digest;
+
+  $rootScope.$on('logOut', function() {
+    authHeader = null;
+    username = initialUsername;
+    password = initialPassword;
+    HA1 = null;
+  });
 
   function request(config) {
     var header = createHeader(config.method, config.url);

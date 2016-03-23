@@ -19,7 +19,7 @@ function digestAuthInterceptorProvider() {
     username = value;
   };
   this.setLogoutEventName = function(value) {
-    username = value;
+    logoutEventName = value;
   };
   this.setPassword = function(value) {
     password = value;

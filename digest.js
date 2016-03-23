@@ -32,7 +32,7 @@ function digestAuthInterceptorProvider() {
 
   this.$get = digestAuthInterceptorFactory;
 
-  digestAuthInterceptorFactory.$inject = ['$q', '$injector', '$location', 'md5', 'localStorageService'];
+  digestAuthInterceptorFactory.$inject = ['$q', '$injector', '$location', 'md5', 'localStorageService', '$rootScope'];
 
   function digestAuthInterceptorFactory($q, $injector, $location, md5, localStorageService, $rootScope) {
     return DigestAuthInterceptor(username, password, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService, $rootScope);

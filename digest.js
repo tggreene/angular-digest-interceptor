@@ -12,10 +12,14 @@ function digestAuthInterceptorProvider() {
     password = null,
     maximumRetries = 5,
     authenticationHeader = 'www-authenticate',
-    credentialsInvalidPath = '/login';
+    credentialsInvalidPath = '/login',
+    logoutEventName = null;
 
   this.setUsername = function(value) {
     username = value;
+  };
+  this.setLogoutEventName = function(value) {
+    logoutEventName = value;
   };
   this.setPassword = function(value) {
     password = value;
@@ -32,14 +36,14 @@ function digestAuthInterceptorProvider() {
 
   this.$get = digestAuthInterceptorFactory;
 
-  digestAuthInterceptorFactory.$inject = ['$q', '$injector', '$location', 'md5', 'localStorageService'];
+  digestAuthInterceptorFactory.$inject = ['$q', '$injector', '$location', 'md5', 'localStorageService', '$rootScope'];
 
-  function digestAuthInterceptorFactory($q, $injector, $location, md5, localStorageService) {
-    return DigestAuthInterceptor(username, password, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService);
+  function digestAuthInterceptorFactory($q, $injector, $location, md5, localStorageService, $rootScope) {
+    return DigestAuthInterceptor(username, password, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService, $rootScope);
   }
 }
 
-function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService) {
+function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries, authenticationHeader, credentialsInvalidPath, $q, $injector, $location, md5, localStorageService, $rootScope) {
   var authHeader = null,
     username = initialUsername,
     password = initialPassword,
@@ -52,6 +56,15 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
   };
 
   return digest;
+
+  if (logoutEventName) {
+    $rootScope.$on(logoutEventName, function() {
+      authHeader = null;
+      username = null;
+      password = null;
+      HA1 = null;
+    });
+  }
 
   function request(config) {
     var header = createHeader(config.method, config.url);

@@ -59,8 +59,8 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
 
   $rootScope.$on(logoutEventName, function() {
     authHeader = null;
-    username = initialUsername;
-    password = initialPassword;
+    username = null;
+    password = null;
     HA1 = null;
   });
 

@@ -12,9 +12,13 @@ function digestAuthInterceptorProvider() {
     password = null,
     maximumRetries = 5,
     authenticationHeader = 'www-authenticate',
-    credentialsInvalidPath = '/login';
+    credentialsInvalidPath = '/login',
+    logoutEventName = 'logOut';
 
   this.setUsername = function(value) {
+    username = value;
+  };
+  this.setLogoutEventName = function(value) {
     username = value;
   };
   this.setPassword = function(value) {
@@ -53,7 +57,7 @@ function DigestAuthInterceptor(initialUsername, initialPassword, maximumRetries,
 
   return digest;
 
-  $rootScope.$on('logOut', function() {
+  $rootScope.$on(logoutEventName, function() {
     authHeader = null;
     username = initialUsername;
     password = initialPassword;
